@@ -110,12 +110,12 @@ def setdriver():
         'Darwin' : '_mac',
         'Linux' : '_linux'
     }
-    #try:
-    system_suffix = system_suffixes[system]
-    bro = webdriver.Chrome(f'drivers/chromedriver{system_suffix}')
-    #except:
-        # print('The browser wasn\t found or couldn\'t be opened. Exiting the program...')
-        # exit()
+    try:
+        system_suffix = system_suffixes[system]
+        bro = webdriver.Chrome(f'drivers/chromedriver{system_suffix}')
+    except:
+        print('The browser wasn\t found or couldn\'t be opened, e.g. due to MacOS security settings --> check the installation instructions. Exiting the program...')
+        exit()
     
     return bro
 
