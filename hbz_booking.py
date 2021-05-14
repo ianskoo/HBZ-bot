@@ -94,16 +94,16 @@ def setdriver():
     """Determines system's OS and sets the right chromedriver"""
     system = platform.system()
     system_suffixes = {
-        'Windows' : '.exe',
-        'Mac' : '_mac',
+        'win32' : '.exe',
+        'Darwin' : '_mac',
         'Linux' : '_linux'
     }
-    try:
-        system_suffix = system_suffixes[system]
-        bro = webdriver.Chrome(f'drivers/chromedriver{system_suffix}')
-    except:
-        print('The browser wasn\t found or couldn\'t be opened. Exiting the program...')
-        exit()
+    #try:
+    system_suffix = system_suffixes[system]
+    bro = webdriver.Chrome(f'drivers/chromedriver{system_suffix}')
+    #except:
+        # print('The browser wasn\t found or couldn\'t be opened. Exiting the program...')
+        # exit()
     
     return bro
 
@@ -120,13 +120,16 @@ def login(bro, config):
 
 
 # Reservation
-def reserve(bro, config):
+def reserve(bro, config, debug=False):
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
     sleep(1)
     bro.execute_script("window.scrollTo(0,0)")
+    sleep(1)
+    #WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="select2-schedules-container"]')))
     bro.find_element_by_xpath('//*[@id="select2-schedules-container"]').click()
     
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
+    sleep(0.5)
     try:
         library = bro.find_element_by_xpath(f'//li[contains(text(), "{config["userdata"]["library"]}")]')
         library_id = int(library.get_attribute('id')[-2:])
@@ -137,6 +140,7 @@ def reserve(bro, config):
         exit()
 
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
+    sleep(0.5)
 
     try:
         path = f'//*[@id="reservations"]/table/tbody/tr/td/a[contains(text(), "{config["userdata"]["table_id"]}")]'
@@ -151,11 +155,13 @@ def reserve(bro, config):
     bro.get(link_res)
 
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="psiattribute5"]')))
+    sleep(1)
     bro.find_element_by_xpath('//*[@id="psiattribute5"]').click()
     bro.find_element_by_xpath('//*[@id="psiattribute5"]/option[8]').click()
     bro.find_element_by_xpath('//*[@id="termsAndConditions"]/div/div/label').click()
 
-    bro.find_element_by_xpath('//*[@id="form-reservation"]/div[5]/div/div/button[2]').click()
+    if not debug:
+        bro.find_element_by_xpath('//*[@id="form-reservation"]/div[5]/div/div/button[2]').click()
     sleep(3)
 
 
@@ -211,7 +217,7 @@ def main():
 
     bro = setdriver()
     login(bro, config)
-    reserve(bro, config)
+    reserve(bro, config, True)
     bro.close()
 
 # Run everything
