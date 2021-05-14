@@ -11,7 +11,7 @@ https://www.python.org/downloads/
 2. Download and install Chrome from its official page:  
 https://www.google.com/chrome/
 
-2. Download the program using the green Code button above, download them as a zip file and decompress them where you want.
+2. Download the program using the green Code button above, download it as a zip file and decompress it where you want.
 
 3. Open the terminal, an app included with MacOS. You can search it in the search bar.
 
@@ -25,7 +25,7 @@ https://www.google.com/chrome/
 6. Finally, run the program with:  
 `python3 hbz_booking.py`
 
-7. If the program gives an error, check if there's a security warning from MacOS for the chromedriver. If so, go to MacOS settings --> Security and Privacy --> General: and check the checkbox to allow the chromedriver to run. Then, repeat step 6.
+7. If the program gives an error, check if there's a security warning from MacOS for the chromedriver. If so, go to MacOS settings --> Security and Privacy --> General, and check the checkbox to allow the chromedriver to run. Then, repeat step 6.
 
 
 ## Usage
