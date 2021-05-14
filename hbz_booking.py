@@ -187,7 +187,7 @@ def wait_till(hour, minutes=0, seconds=0, year=datetime.datetime.today().year, m
         print('Adding one day')
         d2 += datetime.timedelta(days=1)
 
-    print(f'Waiting until {d2}... Please keep your computer on.')
+    print(f'Waiting until {d2}... Please keep your computer on and don\'t let it go to sleep before then.')
     sleep((d2-d).total_seconds())
 
 
