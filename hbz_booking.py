@@ -51,7 +51,7 @@ def makeconfig(config):
     data['end_h'] = time2
     #data['end_m'] = time2[1]
 
-    d = datetime.date.today() + datetime.timedelta(weeks=1)
+    d = datetime.date.today() + datetime.timedelta(days=8)
     in_a_week = input(f'Do you want to reserve in a week, i.e. the {d}? (yes/no)\nresponse: ').strip('"')
     if in_a_week == 'yes':
         data['date'] = str(d)
@@ -74,18 +74,18 @@ def makeconfig(config):
     facs = {'MeF': '2', 'MNF': '3', 'PhF': '4', 'RWF': '5', 'ThF': '6', 'VSF': '7', 'WWF': '8', 'ZDU': '9'}
     fac = None
     while fac not in facs.keys():
-        print('Please enter your faculty. Possibilities:')
+        print('Please enter your faculty. Possibilities: ', end='')
         for k in facs.keys():
             print(k, end='  ')
-        fac = input('response: ')
+        fac = input('\nresponse: ')
     data['faculty_nr'] = facs[fac]
 
-    data['email'], data['psw'], save_psw = get_credentials()
+    data['email'], data['psw'] = get_credentials()
 
-    if save_psw == 'yes':
-        data['save_psw'] = 'True'
-    elif save_psw == 'no':
-        data['save_psw'] = 'False'
+    # if save_psw == 'yes':
+    #     data['psw'] = psw
+    # elif save_psw == 'no':
+        
 
     print('\n\n')
 
@@ -94,11 +94,12 @@ def makeconfig(config):
 
 
 def get_credentials():
+    print('\nYour credentials will be saved locally in userdata.ini.')
     email = input('Please enter your UZH email address:\nresponse: ')
     psw = input('Please enter your password:\n')
-    save_psw = input('Do you want to save your password? (yes/no)\nresponse: ').lower()
+    # save_psw = input('Do you want to save your password? (yes/no)\nresponse: ').lower()
     
-    return email, psw, save_psw
+    return email, psw #, save_psw
     
 
 def setdriver():
@@ -186,7 +187,7 @@ def wait_till(hour, minutes=0, seconds=0, year=datetime.datetime.today().year, m
         print('Adding one day')
         d2 += datetime.timedelta(days=1)
 
-    print(f'Waiting until {d2}...')
+    print(f'Waiting until {d2}... Please keep your computer on.')
     sleep((d2-d).total_seconds())
 
 
