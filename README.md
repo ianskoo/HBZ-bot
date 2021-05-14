@@ -5,16 +5,15 @@ This is a Python bot which automatically reserves a desired study table at one o
 ## Installation and first start
 ### MacOS
 
-1. Install Python 3 from its official website:  
+1. Download and install Python 3 from its official website:  
 https://www.python.org/downloads/
 
-2. Download Chromium from the following link:  
-https://download-chromium.appspot.com  
-Then install it by moving the app image to the Applications folder. You may need to give permission to open it in MacOS settings, under security (only if prompted).
+2. Download and install Chrome from its official page:  
+https://www.google.com/chrome/
 
-2. Downloading the files using the green Code button above, download them as a zip file and decompress them where you want.
+2. Download the program using the green Code button above, download them as a zip file and decompress them where you want.
 
-3. Open the terminal, an app included with MacOS:
+3. Open the terminal, an app included with MacOS. You can search it in the search bar.
 
 4. In the terminal, type:  
 `cd `  
