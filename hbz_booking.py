@@ -43,13 +43,13 @@ def makeconfig(config):
     config['userdata'] = {}
     data = config['userdata']
 
-    time = input('At what time do you want to start your reservation? Type your reply below and press enter. (format: hh.mm, e.g. 10.00)\nresponse: ').split('.')
-    data['start_h'] = time[0]
-    data['start_m'] = time[1]
+    time = input('At what hour do you want to start your reservation? Type your reply below and press enter. (format: hh, e.g. 10)\nresponse: ')#.split('.')
+    data['start_h'] = time
+    #data['start_m'] = time[1]
 
-    time2 = input('At what time do you want to end your reservation? (format: hh.mm, e.g. 10.00)\nresponse: ').split('.')
-    data['end_h'] = time2[0]
-    data['end_m'] = time2[1]
+    time2 = input('At what hour do you want to end your reservation? (format: hh, e.g. 18)\nresponse: ')#.split('.')
+    data['end_h'] = time2
+    #data['end_m'] = time2[1]
 
     d = datetime.date.today() + datetime.timedelta(weeks=1)
     in_a_week = input(f'Do you want to reserve in a week, i.e. the {d}? (yes/no)\nresponse: ').strip('"')
@@ -68,8 +68,17 @@ def makeconfig(config):
     library = input('Please enter the library you want, as shown on the website (e.g. "Hauptbibliothek - Lernzentrum")\nresponse: ')
     data['library'] = library
 
-    seat = input('Please enter the table you want: (e.g. "HBZ-L/424")\nresponse: ')
+    seat = input('Please enter the table you want, (e.g. "HBZ-L/424")\nresponse: ')
     data['table_id'] = seat
+
+    facs = {'MeF': '2', 'MNF': '3', 'PhF': '4', 'RWF': '5', 'ThF': '6', 'VSF': '7', 'WWF': '8', 'ZDU': '9'}
+    fac = None
+    while fac not in facs.keys():
+        print('Please enter your faculty. Possibilities:')
+        for k in facs.keys():
+            print(k, end='  ')
+        fac = input('response: ')
+    data['faculty_nr'] = facs[fac]
 
     data['email'], data['psw'], save_psw = get_credentials()
 
@@ -77,6 +86,8 @@ def makeconfig(config):
         data['save_psw'] = 'True'
     elif save_psw == 'no':
         data['save_psw'] = 'False'
+
+    print('\n\n')
 
     with open('userdata.ini', 'w') as f:
         config.write(f)
@@ -151,18 +162,18 @@ def reserve(bro, config, debug=False):
         bro.close()
         exit()
 
-    link_res = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/reservation.php?rid={table_id}&sid={library_id}&rd={config['userdata']['date']}&sd={config['userdata']['date']}%2010%3A00%3A00&ed={config['userdata']['date']}%2018%3A00%3A00"  
+    link_res = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/reservation.php?rid={table_id}&sid={library_id}&rd={config['userdata']['date']}&sd={config['userdata']['date']}%20{config['userdata']['start_h']}%3A00%3A00&ed={config['userdata']['date']}%20{config['userdata']['end_h']}%3A00%3A00"  
     bro.get(link_res)
 
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="psiattribute5"]')))
     sleep(1)
     bro.find_element_by_xpath('//*[@id="psiattribute5"]').click()
-    bro.find_element_by_xpath('//*[@id="psiattribute5"]/option[8]').click()
+    bro.find_element_by_xpath(f'//*[@id="psiattribute5"]/option[{config["userdata"]["faculty_nr"]}]').click()
     bro.find_element_by_xpath('//*[@id="termsAndConditions"]/div/div/label').click()
 
     if not debug:
         bro.find_element_by_xpath('//*[@id="form-reservation"]/div[5]/div/div/button[2]').click()
-    sleep(3)
+    sleep(5)
 
 
 def wait_till(hour, minutes=0, seconds=0, year=datetime.datetime.today().year, month=datetime.datetime.today().month, day=datetime.datetime.today().day):
@@ -208,7 +219,7 @@ def main():
 
     # Wait till midnight
     if(config['userdata']['wait_till_midnight'] == 'True'):
-        print('Testing if the automated browser works...', end=' ')
+        print('Testing if the automated browser works... ', end='')
         bro = setdriver()
         bro.close()
         print('success.')
