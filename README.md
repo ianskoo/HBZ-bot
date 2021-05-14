@@ -25,6 +25,9 @@ https://www.google.com/chrome/
 6. Finally, run the program with:  
 `python3 hbz_booking.py`
 
+7. If the program gives an error, check if there's a security warning from MacOS for the chromedriver. If so, go to MacOS settings --> Security and Privacy --> General: and check the checkbox to allow the chromedriver to run. Then, repeat step 6.
+
+
 ## Usage
 ### MacOS
 After starting the app for the first time (following steps 3, 4 and 6 from the installation), you will be prompted to reply to a series of questions about your desired reservation. This data will be then saved for the next time in the userdata.ini file, which will be in the same folder of the app. You can also change your preferences directly in this file with a text editor (Textedit), before opening the app again.
