@@ -12,9 +12,7 @@ https://www.google.com/chrome/
 
 3. Download the program using the green Code button above, download it as a zip file and decompress it where you want.
 
-4. Open the terminal, an app included with MacOS. You can search it in the search bar. In the terminal, type:  
-`cd `  
-with a space after it, then drag and drop with the mouse the unzipped HBZ-bot-main folder into the terminal. Then, press enter. 
+4. Open the terminal, an app included with MacOS. You can search it in the search bar. In the terminal, type `cd ` with a space after it, then drag and drop with the mouse the unzipped HBZ-bot-main folder into the terminal. Then, press enter. 
 
 5. In the terminal, copy and paste the following, then press enter:  
 `pip3 install selenium`
@@ -34,8 +32,7 @@ https://www.google.com/chrome/
 3. Download the program using the green Code button above, download it as a zip file and decompress it where you want.
 
 4. Open the Windows command prompt and type:
-`cd `
-with a space afterwards, then drag and drop the unzipped downloaded folder into the cmd prompt, and press enter. You should now see that the path in the command prompt changed to the one of the bot's folder.
+`cd ` with a space afterwards, then drag and drop the unzipped downloaded folder into the cmd prompt, and press enter. You should now see that the path in the command prompt changed to the one of the bot's folder.
 
 5. Type `pip install selenium` in the cmd prompt. It should download some packages for Python.
 
