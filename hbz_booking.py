@@ -43,11 +43,15 @@ def makeconfig(config):
     config['userdata'] = {}
     data = config['userdata']
 
-    time = input('At what hour do you want to start your reservation? Type your reply below and press enter. (format: hh, e.g. 10)\nresponse: ')#.split('.')
+    time = ''
+    while len(time) != 2:
+        time = input('At what hour do you want to start your reservation? Type your reply below and press enter. (format: hh, e.g. 09)\nresponse: ')#.split('.')
     data['start_h'] = time
     #data['start_m'] = time[1]
 
-    time2 = input('At what hour do you want to end your reservation? (format: hh, e.g. 18)\nresponse: ')#.split('.')
+    time2 = ''
+    while len(time2) != 2:
+        time2 = input('At what hour do you want to end your reservation? (format: hh, e.g. 18)\nresponse: ')#.split('.')
     data['end_h'] = time2
     #data['end_m'] = time2[1]
 
@@ -65,7 +69,7 @@ def makeconfig(config):
     elif wait == 'no':
         data['wait_till_midnight'] = 'False'
 
-    library = input('Please enter the library you want, as shown on the website (e.g. "Hauptbibliothek - Lernzentrum")\nresponse: ')
+    library = input('Please enter the library you want, as shown on the website (e.g. "Hauptbibliothek - Lernzentrum", or even partial name "Hauptbibliothek - Ler")\nresponse: ')
     data['library'] = library
 
     seat = input('Please enter the table you want, (e.g. "HBZ-L/424")\nresponse: ')
@@ -130,6 +134,9 @@ def login(bro, config):
     bro.find_element_by_xpath('//*[@id="password"]').send_keys(config['userdata']['psw'])
     bro.find_element_by_xpath('//*[@id="login-box"]/div[4]/button').click()
 
+    link_start = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/schedule.php?clearFilter=1&sid=20&sd={config['userdata']['date']}"
+    bro.get(link_start)
+
 
 # Reservation
 def reserve(bro, config, debug=False):
@@ -139,8 +146,12 @@ def reserve(bro, config, debug=False):
     sleep(1)
     #WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="select2-schedules-container"]')))
     bro.find_element_by_xpath('//*[@id="select2-schedules-container"]').click()
-    
-    WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
+
+    try:
+        WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
+    except exceptions.TimeoutException:
+        pass
+
     sleep(0.5)
     try:
         library = bro.find_element_by_xpath(f'//li[contains(text(), "{config["userdata"]["library"]}")]')
@@ -151,7 +162,12 @@ def reserve(bro, config, debug=False):
         bro.close()
         exit()
 
-    WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
+    try:
+        WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
+    except exceptions.TimeoutException:
+        print('The library seems not to have any open bookings at the selected date, or the website timed out.')
+        exit()
+    
     sleep(0.5)
 
     try:
@@ -162,6 +178,11 @@ def reserve(bro, config, debug=False):
         print('The given table ID couldn\'t be found, please check if you wrote it correctly.')
         bro.close()
         exit()
+
+    if config['userdata']['wait_till_midnight'] == 'True' and not datetime.datetime.today().hour == 0:
+        print('Waiting a few more seconds until midnight...')
+        while not datetime.datetime.today().hour == 0:
+            sleep(1)
 
     link_res = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/reservation.php?rid={table_id}&sid={library_id}&rd={config['userdata']['date']}&sd={config['userdata']['date']}%20{config['userdata']['start_h']}%3A00%3A00&ed={config['userdata']['date']}%20{config['userdata']['end_h']}%3A00%3A00"  
     bro.get(link_res)
@@ -224,12 +245,13 @@ def main():
         bro = setdriver()
         bro.close()
         print('success.')
-        wait_till(23, 59, 55)
-        print(f'Starting reservation.')
+        wait_till(23, 59, 50)
+    
+    print(f'Starting reservation.')
 
     bro = setdriver()
     login(bro, config)
-    reserve(bro, config)
+    reserve(bro, config, True)
     bro.close()
 
 # Run everything
