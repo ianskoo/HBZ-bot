@@ -106,7 +106,7 @@ def setdriver():
     """Determines system's OS and sets the right chromedriver"""
     system = platform.system()
     system_suffixes = {
-        'win32' : '.exe',
+        'Windows' : '.exe',
         'Darwin' : '_mac',
         'Linux' : '_linux'
     }

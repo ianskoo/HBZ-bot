@@ -4,20 +4,15 @@ This is a Python bot which automatically reserves a desired study table at one o
 
 ## Installation and first start
 ### MacOS
-
 1. Download and install Python 3 from its official website:  
 https://www.python.org/downloads/
 
 2. Download and install Chrome from its official page:  
 https://www.google.com/chrome/
 
-2. Download the program using the green Code button above, download it as a zip file and decompress it where you want.
+3. Download the program using the green Code button above, download it as a zip file and decompress it where you want.
 
-3. Open the terminal, an app included with MacOS. You can search it in the search bar.
-
-4. In the terminal, type:  
-`cd `  
- with a space after it, then drag and drop with the mouse the unzipped HBZ-bot-main folder into the terminal. Then, press enter. 
+4. Open the terminal, an app included with MacOS. You can search it in the search bar. In the terminal, type `cd ` with a space after it, then drag and drop with the mouse the unzipped HBZ-bot-main folder into the terminal. Then, press enter. 
 
 5. In the terminal, copy and paste the following, then press enter:  
 `pip3 install selenium`
@@ -27,12 +22,28 @@ https://www.google.com/chrome/
 
 7. If the program gives an error, check if there's a security warning from MacOS for the chromedriver. If so, go to MacOS settings --> Security and Privacy --> General, and check the checkbox to allow the chromedriver to run. Then, repeat step 6.
 
+### Windows
+1. Download and install Python 3 from its official website:  
+https://www.python.org/downloads/
+
+2. Download and install Chrome from its official page:  
+https://www.google.com/chrome/
+
+3. Download the program using the green Code button above, download it as a zip file and decompress it where you want.
+
+4. Open the Windows command prompt and type:
+`cd ` with a space afterwards, then drag and drop the unzipped downloaded folder into the cmd prompt, and press enter. You should now see that the path in the command prompt changed to the one of the bot's folder.
+
+5. Type `pip install selenium` in the cmd prompt. It should download some packages for Python.
+
+6. Finally, run the program with:  
+`python3 hbz_booking.py`
 
 ## Usage
-### MacOS
-After starting the app for the first time (following steps 3, 4 and 6 from the installation), you will be prompted to reply to a series of questions about your desired reservation. This data will be then saved for the next time in the userdata.ini file, which will be in the same folder of the app. You can also change your preferences directly in this file with a text editor (Textedit), before opening the app again.
+### MacOS and Windows
+To run the app after the first time, repeat steps 4 and 7 from the installation part (temporary solution).
 
-To run the app, repeat steps 3, 4 and 6 from the installation part (temporary solution).
+After starting the app for the first time (following steps 4 and 7 from the installation), you will be asked to reply to a series of questions about your desired reservation. This info will be then saved for the next time in the userdata.ini file, which will be in the same folder of the app. You can also change your preferences directly in this file with a text editor (Textedit), before opening the app again.
 
 ## Suggestions for improvement and bug reports
 
