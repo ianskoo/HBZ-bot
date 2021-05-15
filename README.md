@@ -24,7 +24,8 @@ https://www.google.com/chrome/
 
 ### Windows
 1. Download and install Python 3 from its official website:  
-https://www.python.org/downloads/
+https://www.python.org/downloads/  
+**IMPORTANT: during installation, tick the checkbox "Add Python to PATH".**
 
 2. Download and install Chrome from its official page:  
 https://www.google.com/chrome/
