@@ -35,7 +35,7 @@ https://www.google.com/chrome/
 4. Open the Windows command prompt and type:
 `cd ` with a space afterwards, then drag and drop the unzipped downloaded folder into the cmd prompt, and press enter. You should now see that the path in the command prompt changed to the one of the bot's folder.
 
-5. Type `pip install selenium` in the cmd prompt. It should download some packages for Python.
+5. Type `pip install selenium` in the cmd prompt. It should download some packages for Python. If you get an error, it probably means that your Python is not in PATH as requested in step 1. Try reinstalling Python making sure to follow step 1.
 
 6. Finally, run the program with:  
 `python3 hbz_booking.py`
