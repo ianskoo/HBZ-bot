@@ -251,7 +251,7 @@ def main():
 
     bro = setdriver()
     login(bro, config)
-    reserve(bro, config, True)
+    reserve(bro, config)
     bro.close()
 
 # Run everything
