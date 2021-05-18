@@ -82,6 +82,7 @@ def makeconfig(config):
         for k in facs.keys():
             print(k, end='  ')
         fac = input('\nresponse: ')
+    data['faculty'] = fac
     data['faculty_nr'] = facs[fac]
 
     data['email'], data['psw'] = get_credentials()
@@ -125,7 +126,7 @@ def setdriver():
 
 def login(bro, config):
     """Login to website"""
-    link_login = "https://hbzwwws005.uzh.ch/booked-ubzh/Web/index.php"
+    link_login = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/schedule.php?clearFilter=1&sid=20&sd={config['userdata']['date']}"
     bro.get(link_login)
 
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="email"]')))
@@ -134,25 +135,35 @@ def login(bro, config):
     bro.find_element_by_xpath('//*[@id="password"]').send_keys(config['userdata']['psw'])
     bro.find_element_by_xpath('//*[@id="login-box"]/div[4]/button').click()
 
-    link_start = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/schedule.php?clearFilter=1&sid=20&sd={config['userdata']['date']}"
-    bro.get(link_start)
-
-
-# Reservation
-def reserve(bro, config, debug=False):
+    # Waiting until redirection and scrolling to top
     WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
     sleep(1)
     bro.execute_script("window.scrollTo(0,0)")
     sleep(1)
-    #WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="select2-schedules-container"]')))
-    bro.find_element_by_xpath('//*[@id="select2-schedules-container"]').click()
-
     try:
         WebDriverWait(bro, 10).until(ec.visibility_of_element_located((By.XPATH, '//*[@id="reservations"]/table/tbody')))
     except exceptions.TimeoutException:
         pass
-
     sleep(0.5)
+
+
+def find_libraries(bro, config):
+    login(bro, config)
+
+    bro.find_element_by_xpath('//*[@id="select2-schedules-container"]').click()
+    libraries = bro.find_elements(By.CLASS_NAME, 'select2-results__option')
+    
+    libs_dict = {}
+    for l in libraries:
+        libs_dict[l.text] = ''.join(i for i in l.get_attribute('id')[-2:] if i.isdigit())
+
+    return libs_dict
+
+# Reservation
+def reserve(bro, config, debug=False):
+    login(bro, config)
+    bro.find_element_by_xpath('//*[@id="select2-schedules-container"]').click()
+
     try:
         library = bro.find_element_by_xpath(f'//li[contains(text(), "{config["userdata"]["library"]}")]')
         library_id = int(library.get_attribute('id')[-2:])
@@ -195,7 +206,10 @@ def reserve(bro, config, debug=False):
 
     if not debug:
         bro.find_element_by_xpath('//*[@id="form-reservation"]/div[5]/div/div/button[2]').click()
-    sleep(5)
+        print('Waiting up to 3 min for reservation to be confirmed...')
+        WebDriverWait(bro, 180).until(ec.visibility_of_element_located((By.XPATH, '//div[@id="wait-box"]/div[@id="result"]')))
+    
+    sleep(5) # To read confirmation
 
 
 def wait_till(hour, minutes=0, seconds=0, year=datetime.datetime.today().year, month=datetime.datetime.today().month, day=datetime.datetime.today().day):
@@ -245,13 +259,13 @@ def main():
         bro = setdriver()
         bro.close()
         print('success.')
-        wait_till(23, 59, 50)
+        wait_till(23, 59, 00)
     
-    print(f'Starting reservation.')
+    print(f'Starting reservation...')
 
     bro = setdriver()
-    login(bro, config)
     reserve(bro, config)
+    # find_libraries(bro, config)
     bro.close()
 
 # Run everything
