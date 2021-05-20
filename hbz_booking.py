@@ -9,6 +9,7 @@ from os import path
 import datetime
 import platform
 import configparser
+import csv
 
 def getconfig(want_to_change=False):
     """Get user data from ini file"""
@@ -147,7 +148,7 @@ def login(bro, config):
     sleep(0.5)
 
 
-def find_libraries(bro, config):
+def get_libraries(bro, config ):
     login(bro, config)
 
     bro.find_element_by_xpath('//*[@id="select2-schedules-container"]').click()
@@ -155,6 +156,7 @@ def find_libraries(bro, config):
     
     libs_dict = {}
     for l in libraries:
+        # libs_dict[''.join(i for i in l.get_attribute('id')[-2:] if i.isdigit())] = l.text
         libs_dict[l.text] = ''.join(i for i in l.get_attribute('id')[-2:] if i.isdigit())
 
     return libs_dict
@@ -190,10 +192,6 @@ def reserve(bro, config, debug=False):
         bro.close()
         exit()
 
-    if config['userdata']['wait_till_midnight'] == 'True' and not datetime.datetime.today().hour == 0:
-        print('Waiting a few more seconds until midnight...')
-        while not datetime.datetime.today().hour == 0:
-            sleep(1)
 
     link_res = f"https://hbzwwws005.uzh.ch/booked-ubzh/Web/reservation.php?rid={table_id}&sid={library_id}&rd={config['userdata']['date']}&sd={config['userdata']['date']}%20{config['userdata']['start_h']}%3A00%3A00&ed={config['userdata']['date']}%20{config['userdata']['end_h']}%3A00%3A00"  
     bro.get(link_res)
@@ -204,6 +202,13 @@ def reserve(bro, config, debug=False):
     bro.find_element_by_xpath(f'//*[@id="psiattribute5"]/option[{config["userdata"]["faculty_nr"]}]').click()
     bro.find_element_by_xpath('//*[@id="termsAndConditions"]/div/div/label').click()
 
+    # Wait till 00.00
+    if config['userdata']['wait_till_midnight'] == 'True' and not datetime.datetime.today().hour == 0:
+        print('Waiting a few more seconds until midnight...')
+        while not datetime.datetime.today().hour == 0:
+            sleep(0.1)
+
+    # Click reserve button
     if not debug:
         bro.find_element_by_xpath('//*[@id="form-reservation"]/div[5]/div/div/button[2]').click()
         print('Waiting up to 3 min for reservation to be confirmed...')
@@ -265,8 +270,8 @@ def main():
 
     bro = setdriver()
     reserve(bro, config)
-    # find_libraries(bro, config)
-    bro.close()
+    # print(get_libraries(bro, config))
+    # bro.close()
 
 # Run everything
 if __name__ == "__main__":
